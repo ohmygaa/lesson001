@@ -1,0 +1,90 @@
+
+================================================================
+=
+=    Debian 7.4 (wheezy)
+=     Mysql 5.5
+=     Ruby 1.9.3
+=     Redmine 2.5.0
+=
+================================================================
+
+
+
+================================================================
+# aptitude purge rpcbind
+
+# aptitude install mysql-server
+# aptitude install libmysqlclient-dev
+
+# aptitude install git g++
+# aptitude install libssl-dev libreadline-gplv2-dev zlib1g-dev libyaml-dev
+# aptitude install build-essential curl
+# aptitude install imagemagick libmagickcore-dev libmagickwand-dev
+
+# aptitude install apache2
+# aptitude install libcurl4-openssl-dev apache2-threaded-dev libapr1-dev libaprutil1-dev
+
+================================================================
+
+# \curl -L https://get.rvm.io | bash -s stable
+# source /etc/profile.d/rvm.sh
+# rvm install 1.9.3
+
+================================================================
+
+# gem install mysql2
+# gem install bundler --no-rdoc --no-ri
+
+================================================================
+
+# cd /usr/local/src
+# wget http://www.redmine.org/releases/redmine-2.5.0.tar.gz
+# tar xzf redmine-2.5.0.tar.gz
+# mv redmine-2.5.0 /var/lib/redmine
+
+# cd /var/lib/redmine/
+# bundle install --without development test postgresql sqlite
+
+================================================================
+
+# vi config/database.yml       <--- 適当に直す
+# rake generate_secret_token
+# RAILS_ENV=production rake db:migrate
+
+================================================================
+
+# gem install passenger --no-rdoc --no-ri
+# passenger-install-apache2-module
+
+# vi /etc/apache2/conf.d/redmine.conf
+  -----------------------------------------------------------------------------
+   LoadModule passenger_module /usr/local/rvm/gems/ruby-1.9.3-p545/gems/passenger-4.0.40/buildout/apache2/mod_passenger.so
+   <IfModule mod_passenger.c>
+     PassengerRoot /usr/local/rvm/gems/ruby-1.9.3-p545/gems/passenger-4.0.40
+     PassengerDefaultRuby /usr/local/rvm/gems/ruby-1.9.3-p545/wrappers/ruby
+   </IfModule>
+  -----------------------------------------------------------------------------
+
+================================================================
+
+# cd /var/lib/redmine
+# chown -R www-data:www-data /var/lib/redmine
+# chmod -R 755 files log tmp public/plugin_assets
+
+================================================================
+
+# vi /etc/apache2/sites-enabled/000-default 
+  -----------------------------------------------------------------------------
+    <VirtualHost *:80>
+        ServerAdmin webmaster@localhost
+        DocumentRoot /var/www
+        RackBaseURI /redmine    <======コレ追加
+        <Directory />
+                Options FollowSymLinks
+                AllowOverride None
+        </Directory>
+  -----------------------------------------------------------------------------
+# ln -s /var/lib/redmine/public /var/www/redmine
+# /etc/init.d/apache2 restart
+
+================================================================
