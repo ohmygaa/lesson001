@@ -1,3 +1,12 @@
+(load-library "php-mode")
+(require 'php-mode)
+
+(add-hook 'php-mode-user-hook
+  '(lambda ()
+     (setq tab-width 2)
+     (setq indent-tabs-mode t)
+   )
+)
 
 ;; commandをcontrolと同じにする
 ;(setq mac-command-modifier 'ctrl)
@@ -16,8 +25,6 @@
 (set-face-foreground 'show-paren-match-face "SkyBlue")
 (setq show-paren-style 'expression)
 
-;; C-k １回で行全体を削除する
-(setq kill-whole-line t)
 
 ; カーソル行アンダーライン
 (setq hl-line-face 'underline)
@@ -95,7 +102,7 @@
 ;====================================
 (defface my-face-b-1 '((t (:background "medium aquamarine"))) nil)
 (defface my-face-b-1 '((t (:background "dark turquoise"))) nil)
-(defface my-face-b-2 '((t (:background "black"))) nil)
+(defface my-face-b-2 '((t (:background "DarkGray"))) nil)
 (defface my-face-b-2 '((t (:background "cyan"))) nil)
 (defface my-face-b-2 '((t (:background "SeaGreen"))) nil)
 (defface my-face-u-1 '((t (:foreground "SteelBlue" :underline t))) nil)
@@ -117,66 +124,3 @@
                                nil
                                (font-lock-mode t))))
 ;--------------------------------------------------------
-(global-set-key "\C-v" 'exp-pagedown)
-(global-set-key [next] 'exp-pagedown)
-(defun exp-pagedown () "Page Down"
-  (interactive)
-  (if (> (count-lines (window-end) (point)) 2)
-        (forward-line (- (count-lines (point) (window-end)) 2))
-    (progn
-        (forward-line (/ (window-height) 2)) ; 半画面
-	;  (forward-line (- (window-height) 4)) ; 全画面
-	  (recenter -1))))
-
-(global-set-key "\M-v" 'exp-pageup)
-(global-set-key [prior] 'exp-pageup)
-(defun exp-pageup () "Page Up"
-  (interactive)
-  (if (/= (window-start) (point))
-        (goto-char (window-start))
-    (progn
-        (forward-line (- 0 (/ (window-height) 2))) ; 半画面
-	;  (forward-line (- 3 (window-height))) ; 前画面
-	  (recenter 0))))
-;--------------------------------------------------------
-
-
-
-(defun window-resizer ()
-  "Control window size and position."
-  (interactive)
-  (let ((window-obj (selected-window))
-        (current-width (window-width))
-        (current-height (window-height))
-        (dx (if (= (nth 0 (window-edges)) 0) 1
-              -1))
-        (dy (if (= (nth 1 (window-edges)) 0) 1
-              -1))
-        action c)
-    (catch 'end-flag
-      (while t
-        (setq action
-              (read-key-sequence-vector (format "size[%dx%d]"
-                                                (window-width)
-                                                (window-height))))
-        (setq c (aref action 0))
-        (cond ((= c ?l)
-               (enlarge-window-horizontally dx))
-              ((= c ?h)
-               (shrink-window-horizontally dx))
-              ((= c ?j)
-               (enlarge-window dy))
-              ((= c ?k)
-               (shrink-window dy))
-              ;; otherwise
-              (t
-               (let ((last-command-char (aref action 0))
-                     (command (key-binding action)))
-                 (when command
-                   (call-interactively command)))
-               (message "Quit")
-               (throw 'end-flag t)))))))
-(global-set-key "\C-c\C-r" 'window-resizer)
-
-
-
