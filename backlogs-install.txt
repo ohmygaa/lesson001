@@ -1,0 +1,26 @@
+
+aptitude install libxml2-dev  libxslt1-dev
+
+cd redmine/plugins
+git clone git://github.com/backlogs/redmine_backlogs.git
+
+RAILS_ENV=production
+export RAILS_ENV
+
+cd redmine_backlogs
+bundle install
+
+-- マイグレーション実行
+cd ../../plugins
+bundle exec rake db:migrate
+
+-- 諸々初期化
+bundle exec rake tmp:cache:clear
+bundle exec rake tmp:sessions:clear
+
+-- backlogs本体のインストール。
+bundle exec rake redmine:backlogs:install
+
+/etc/init.d/apache2 restart
+
+
