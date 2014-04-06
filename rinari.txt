@@ -1,0 +1,46 @@
+
+---------------------------------------
+--  rinari
+---------------------------------------
+% cd /tmp
+% git clone git://github.com/eschulte/rinari.git
+% cd rinari
+% git submodule init
+% git submodule update
+% cd ../
+% mv rinari /usr/share/emacs/site-lisp
+
+
+---------------------------------------
+-- rhtml
+---------------------------------------
+% cd /tmp
+% git clone git://github.com/eschulte/rhtml.git
+% mv rhtml /usr/share/emacs/site-lisp
+
+
+---------------------------------------
+-- ~/.emacs/init.el
+---------------------------------------
+;; Interactively Do Things (highly recommended, but not strictly required)
+;(require 'ido)
+;(ido-mode t)
+    
+;; Rinari
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/rinari")
+(require 'rinari)
+
+;; rhtml-mode
+(add-to-list 'load-path "/usr/share/emacs/site-lisp/rhtml")
+(require 'rhtml-mode)
+(add-hook 'rhtml-mode-hook
+    (lambda () (rinari-launch)))
+
+--------------------------------------
+
+
+
+
+
+
+

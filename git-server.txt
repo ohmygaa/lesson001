@@ -1,0 +1,25 @@
+
+aptitude install git-core git-daemon-run
+
+---------------------------------
+vi /etc/sv/git-daemon/run
+---------------------------------
+# diff run.ORG run
+6c6
+<     --base-path=/var/cache /var/cache/git
+---
+>     --base-path=/var/cache/git  --export-all --enable=receive-pack
+---------------------------------
+
+cd /var/cache/git/
+mkdir xxxxx.git
+cd xxxxx.git
+git init --bare --shared
+
+
+---------------------------------
+-- 再起動 --
+sv restart git-daemon
+
+
+
